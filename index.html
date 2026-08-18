@@ -2529,7 +2529,7 @@ gsap.fromTo('.hair-word',{opacity:0,scaleX:.5},{opacity:1,scaleX:1,duration:1.2,
 
   /* ---------- Arrastre con Pointer Events + bloqueo de eje ---------- */
   var down = false, locked = null, startX = 0, startY = 0, baseX = 0, dx = 0;
-  var lastX = 0, lastT = 0, vel = 0, pid = null;
+  var lastX = 0, lastT = 0, vel = 0, pid = null, suppressClick = false;
 
   function isInteractive(el){
     return !!(el && el.closest && el.closest('a,button,input,select,textarea'));
@@ -2542,7 +2542,7 @@ gsap.fromTo('.hair-word',{opacity:0,scaleX:.5},{opacity:1,scaleX:1,duration:1.2,
     locked = null;
     startX = e.clientX; startY = e.clientY;
     lastX  = e.clientX; lastT = e.timeStamp || performance.now();
-    vel    = 0; dx = 0;
+    vel    = 0; dx = 0; suppressClick = false;
     baseX  = -idx * viewp.clientWidth;
     pid    = e.pointerId;
     setX(baseX, false);
@@ -2585,6 +2585,8 @@ gsap.fromTo('.hair-word',{opacity:0,scaleX:.5},{opacity:1,scaleX:1,duration:1.2,
     try{ viewp.releasePointerCapture(pid); }catch(err){}
     if(locked !== 'x'){ locked = null; return; }
     locked = null;
+    if(Math.abs(dx) > 8) suppressClick = true;
+    setTimeout(function(){ suppressClick = false; }, 0);
 
     var w  = viewp.clientWidth;
     var target = idx;
@@ -2597,9 +2599,10 @@ gsap.fromTo('.hair-word',{opacity:0,scaleX:.5},{opacity:1,scaleX:1,duration:1.2,
   viewp.addEventListener('pointercancel', release);
   viewp.addEventListener('lostpointercapture', function(){ if(down) release(); });
 
-  // Evita que un arrastre dispare el click del enlace que hay debajo
+  // Evita que un arrastre dispare el click del enlace que hay debajo.
+  // La supresion dura solo hasta el final del gesto actual, no bloquea clicks posteriores.
   viewp.addEventListener('click', function(e){
-    if(Math.abs(dx) > 8){ e.preventDefault(); e.stopPropagation(); dx = 0; }
+    if(suppressClick){ e.preventDefault(); e.stopPropagation(); suppressClick = false; }
   }, true);
 
   /* ---------- Teclado ---------- */
