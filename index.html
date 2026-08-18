@@ -1179,6 +1179,172 @@ body{font-weight:400}
 .rsvp-fine{font-size:15px}
 .rsvp-note{font-size:16px}
 .rsvp-toggle-btn{font-weight:500;font-size:18px}
+/* ============================================================
+   RESPLANDOR DE ORO — barrido de luz sobre todos los dorados
+   ============================================================ */
+@keyframes goldSweep{
+  0%{background-position:200% center}
+  100%{background-position:-200% center}
+}
+@keyframes goldGlow{
+  0%,100%{filter:drop-shadow(0 0 0 rgba(201,164,86,0))}
+  50%{filter:drop-shadow(0 0 6px rgba(201,164,86,.55)) drop-shadow(0 0 14px rgba(201,164,86,.22))}
+}
+@keyframes goldLine{
+  0%{background-position:200% center}
+  100%{background-position:-200% center}
+}
+
+/* --- Base del barrido (texto) --- */
+.hero-eyebrow,.hero-date .sep,
+.script,.eyebrow,.hair-word span,.verse-quote,
+.date-eyebrow,.date-h em,.date-roman,.date-numbers .date-lbl,
+.story-initials,.mono-wm,
+.loc-type,
+.countdown-sub,.itinerary-sub,.dress-sub,.gallery-sub,
+.dress-note,.dc-rule-t,
+.gal-hint,.gift-reveal-eyebrow,.giftbox-cta,
+.rsvp-title em,
+.footer-names .amp,.footer-date{
+  background-image:linear-gradient(100deg,
+    #8F7335 0%, #A98A45 8%, #C9A456 16%, #E0C57E 24%,
+    #F0DCA6 32%, #C9A456 40%, #A98A45 48%, #8F7335 56%,
+    #A98A45 66%, #C9A456 76%, #E0C57E 86%, #8F7335 100%);
+  background-size:300% 100%;
+  -webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;color:transparent;
+  animation:goldSweep 5.5s linear infinite;
+  padding-left:.34em;padding-right:.34em;
+  margin-left:-.34em;margin-right:-.34em;
+  filter:drop-shadow(0 0 5px rgba(201,164,86,.30));
+}
+
+/* --- Variante clara: sobre fondos oscuros (hero, fecha, footer) --- */
+.hero-eyebrow,.hero-date .sep,
+.date-eyebrow,.date-h em,.date-roman,.date-numbers .date-lbl,
+.footer-names .amp,.footer-date{
+  background-image:linear-gradient(100deg,
+    #C9A456 0%, #E0C57E 10%, #F5E5B8 20%, #FFFBEA 30%,
+    #F5E5B8 40%, #E0C57E 50%, #C9A456 60%,
+    #E0C57E 72%, #F5E5B8 84%, #C9A456 100%);
+  filter:drop-shadow(0 0 7px rgba(232,213,160,.42));
+}
+
+/* --- Variante legible: datos críticos (hora, fecha límite, titular) --- */
+.loc-time,.rsvp-deadline,.gr-acc-n,.cd-lbl,
+.itin-event.is-active .itin-time,.rsvp-pases-num{
+  background-image:linear-gradient(100deg,
+    #5F4A1F 0%, #6E5726 10%, #7D6329 20%, #8F7335 30%,
+    #7D6329 40%, #6E5726 52%, #5F4A1F 64%,
+    #7D6329 78%, #8F7335 88%, #5F4A1F 100%);
+  background-size:300% 100%;
+  -webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;color:transparent;
+  animation:goldSweep 6.5s linear infinite;
+  padding-left:.2em;padding-right:.2em;
+  margin-left:-.2em;margin-right:-.2em;
+  filter:drop-shadow(0 0 4px rgba(143,115,53,.3));
+}
+/* el reloj y el icono del deadline conservan tinta sólida */
+.rsvp-deadline svg{color:#5F4A1F;-webkit-text-fill-color:initial}
+
+/* --- Capitular --- */
+.drop-cap::first-letter{
+  background-image:linear-gradient(100deg,
+    #8F7335 0%,#C9A456 20%,#F0DCA6 34%,#C9A456 48%,#8F7335 62%,#C9A456 82%,#8F7335 100%);
+  background-size:300% 100%;
+  -webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;color:transparent;
+  animation:goldSweep 5.5s linear infinite;
+}
+
+/* --- Filetes y líneas doradas: luz que recorre --- */
+.eyebrow::before,.eyebrow::after,
+.hair-word::before,.hair-word::after,
+.gal-header-ornament,
+.rsvp-divider::before,.rsvp-divider::after,
+.dc-sep-line{
+  background-size:300% 100%;
+  animation:goldLine 5.5s linear infinite;
+}
+.eyebrow::before,.eyebrow::after{
+  background-image:linear-gradient(100deg,#8F7335,#C9A456,#F5E5B8,#C9A456,#8F7335,#C9A456,#F5E5B8,#8F7335)!important;
+}
+.hair-word::before,.hair-word::after,
+.gal-header-ornament,
+.rsvp-divider::before,.rsvp-divider::after{
+  background-image:linear-gradient(100deg,transparent 0%,#C9A456 22%,#F5E5B8 34%,#C9A456 46%,transparent 62%,#C9A456 80%,transparent 100%)!important;
+}
+.dc-sep-line{
+  background-size:100% 300%;
+  background-image:linear-gradient(180deg,transparent 0%,rgba(201,164,86,.5) 14%,#E0C57E 26%,rgba(201,164,86,.5) 38%,transparent 56%,rgba(201,164,86,.5) 78%,transparent 100%)!important;
+  animation:goldLineV 6s linear infinite;
+}
+@keyframes goldLineV{0%{background-position:center 200%}100%{background-position:center -200%}}
+
+/* --- Ornamentos SVG dorados: pulso de resplandor --- */
+.hero-ornament-top,.verse-ornament,.story-ornament,
+.rosette,.rsvp-ornament,.footer-ornament,
+.rsvp-divider-heart,.dc-rule-ico,.gr-arrow,.gr-acc-btn,
+.loader-ornament,.kids-icon svg,.gift-close,
+.rsvp-corner,.cel-separator svg,.wheel-hub{
+  animation:goldGlow 4.5s ease-in-out infinite;
+}
+.verse-ornament{animation-delay:.4s}
+.story-ornament{animation-delay:.8s}
+.rsvp-ornament{animation-delay:.3s}
+.footer-ornament{animation-delay:.6s}
+.rosette--br{animation-delay:1.1s}
+.dc-rule-ico:nth-child(1){animation-delay:.2s}
+
+/* --- Puntos y marcadores dorados --- */
+.gr-dot.is-active,.itin-event.is-active .itin-marker{
+  animation:goldGlow 3.2s ease-in-out infinite;
+}
+
+/* --- El sello del vinilo también respira --- */
+.vinyl-label-text{
+  background-image:linear-gradient(100deg,#C9A456 0%,#F5E5B8 22%,#FFFBEA 36%,#F5E5B8 50%,#C9A456 66%,#F5E5B8 86%,#C9A456 100%);
+  background-size:300% 100%;
+  -webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;
+  animation:goldSweep 5s linear infinite;
+}
+
+/* --- Respeto por accesibilidad --- */
+@media(prefers-reduced-motion:reduce){
+  .hero-eyebrow,.hero-date .sep,.script,.eyebrow,.hair-word span,.verse-quote,
+  .date-eyebrow,.date-h em,.date-roman,.date-numbers .date-lbl,.story-initials,.mono-wm,
+  .loc-type,.countdown-sub,.itinerary-sub,.dress-sub,.gallery-sub,.dress-note,.dc-rule-t,
+  .gal-hint,.gift-reveal-eyebrow,.giftbox-cta,.rsvp-title em,.footer-names .amp,.footer-date,
+  .loc-time,.rsvp-deadline,.gr-acc-n,.cd-lbl,.rsvp-pases-num,.drop-cap::first-letter,
+  .vinyl-label-text,
+  .eyebrow::before,.eyebrow::after,.hair-word::before,.hair-word::after,
+  .gal-header-ornament,.rsvp-divider::before,.rsvp-divider::after,.dc-sep-line,
+  .hero-ornament-top,.verse-ornament,.story-ornament,.rosette,.rsvp-ornament,
+  .footer-ornament,.rsvp-divider-heart,.dc-rule-ico,.gr-arrow,.gr-acc-btn,
+  .loader-ornament,.gift-close,.rsvp-corner,.gr-dot.is-active{
+    animation:none!important;
+  }
+}
+
+/* ============ FIX: simetría de las figuras del dress code ============ */
+.dc-figures{align-items:stretch}
+.dc-fig{justify-content:flex-start}
+.dc-fig-imgbox{height:clamp(170px,42vw,230px);display:flex;align-items:flex-end;justify-content:center}
+.dc-fig img{height:100%;width:auto;max-width:100%;object-fit:contain;display:block;filter:drop-shadow(0 8px 18px rgba(30,47,78,.22))}
+.dc-fig-label,.dc-fig-sub{white-space:nowrap}
+/* la falda del vestido ensancha la silueta: leve compensacion para que lean simetricas */
+.dc-fig--dama img{height:95%}
+.dc-figures{align-items:flex-start}
+.dc-fig{align-items:center}
+
+/* ============ FIX: la card del regalo no debe teñirse de azul ============ */
+.gift-reveal{
+  background:#F7F3E9;
+  backdrop-filter:none;-webkit-backdrop-filter:none;
+}
+
 </style>
 </head>
 <body>
@@ -1450,15 +1616,15 @@ body{font-weight:400}
 
       <div class="dc-figures">
         <div class="dc-fig">
-          <img src="caballero.png" alt="Caballero, traje formal" loading="lazy">
+          <span class="dc-fig-imgbox"><img src="caballero.png" alt="Caballero, traje formal" loading="lazy"></span>
           <span class="dc-fig-label">Caballeros</span>
           <span class="dc-fig-sub">traje</span>
         </div>
         <div class="dc-sep-line" aria-hidden="true"></div>
-        <div class="dc-fig">
-          <img src="dama.png" alt="Dama, vestido largo o midi" loading="lazy">
+        <div class="dc-fig dc-fig--dama">
+          <span class="dc-fig-imgbox"><img src="dama.png" alt="Dama, vestido largo o midi" loading="lazy"></span>
           <span class="dc-fig-label">Damas</span>
-          <span class="dc-fig-sub">vestido largo o midi</span>
+          <span class="dc-fig-sub">vestido</span>
         </div>
       </div>
 
