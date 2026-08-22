@@ -2362,7 +2362,14 @@ gsap.fromTo('.hair-word',{opacity:0,scaleX:.5},{opacity:1,scaleX:1,duration:1.2,
   // El desplazamiento lo hace el propio navegador: sin arrastre a mano
   function goTo(n, behavior){
     idx = Math.max(0, Math.min(total-1, n));
-    viewp.scrollTo({ left: idx * viewp.clientWidth, behavior: behavior || 'smooth' });
+    var target = idx * viewp.clientWidth;
+    try{ viewp.scrollTo({ left: target, behavior: behavior || 'smooth' }); }
+    catch(e){ viewp.scrollLeft = target; }
+    // Red de seguridad: si el scroll suave no se aplica (reduced-motion, navegadores
+    // viejos o pestaña en segundo plano), colocamos la posicion a mano.
+    setTimeout(function(){
+      if(Math.abs(viewp.scrollLeft - target) > 4) viewp.scrollLeft = target;
+    }, 420);
     syncUI();
   }
 
