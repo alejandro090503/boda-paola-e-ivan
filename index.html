@@ -626,7 +626,7 @@ h1 em,h2 em,h3 em{font-style:italic;font-weight:500;color:var(--accent)}
 body.gift-locked{overflow:hidden}
 
 .gift-reveal{
-  position:relative;width:100%;max-width:560px;max-height:calc(100dvh - 32px);
+  position:relative;width:100%;max-width:560px;max-height:calc(100vh - 32px);max-height:calc(100dvh - 32px);
   overflow-y:auto;-webkit-overflow-scrolling:touch;
   background:rgba(245,241,230,.94);
   backdrop-filter:blur(20px) saturate(1.1);-webkit-backdrop-filter:blur(20px) saturate(1.1);
@@ -1357,6 +1357,34 @@ body{font-weight:400}
 .gr-slide img{-webkit-user-drag:none;user-drag:none}
 .gr-arrow:disabled{cursor:default;opacity:.32}
 .gr-arrow:disabled:hover{background:transparent;color:var(--gold-deep);transform:none}
+
+/* ============ COMPATIBILIDAD iOS — modal de la mesa de regalos ============ */
+/* El backdrop se monta en <body>, asi que ningun ancestro con contain/transform
+   puede romper su position:fixed ni recortarlo. */
+.gift-backdrop{
+  position:fixed;top:0;right:0;bottom:0;left:0;
+  height:100vh;height:100dvh;
+  -webkit-transform:translateZ(0);transform:translateZ(0); /* capa propia: evita repintados sucios en Safari */
+}
+body.gift-locked{overflow:hidden;-webkit-overflow-scrolling:auto;overscroll-behavior:none}
+/* Safari necesita el prefijo y momentum propio en el carril del carrusel */
+.gr-viewport{
+  -webkit-overflow-scrolling:touch;
+  -webkit-scroll-snap-type:x mandatory;
+  scroll-snap-type:x mandatory;
+}
+.gr-slide{-webkit-scroll-snap-align:center;scroll-snap-align:center}
+/* iOS colapsa los flex-item con flex-basis:100% dentro de un scroller: fijamos el ancho */
+.gr-track{min-width:100%}
+.gr-slide{width:100%;min-width:100%;flex:0 0 100%}
+/* Los botones deben responder al primer toque en Safari */
+.gift-close,.gr-arrow,.gr-dot,.gr-btn,.gr-acc-btn,.giftbox{
+  -webkit-tap-highlight-color:transparent;touch-action:manipulation;
+}
+/* Safari no hereda bien el redondeo en botones */
+.gift-close,.gr-arrow,.gr-acc-btn,.gr-dot{-webkit-appearance:none;appearance:none}
+/* La caja de regalo debe verse aunque GSAP no llegue a animarla */
+.giftbox-stage > div{opacity:1}
 </style>
 </head>
 <body>
@@ -1622,7 +1650,6 @@ body{font-weight:400}
   <!-- KIDS POLICY -->
   <section class="section-paper kids-policy">
     <div class="container kids-inner">
-      <div class="eyebrow">Una nota cariñosa</div>
       <h2>Una celebración <em>de</em> adultos</h2>
       <div class="kids-icon">
         <svg width="72" height="72" viewBox="0 0 72 72" fill="none" stroke="var(--gold)" stroke-width="1.2" stroke-linecap="round">
@@ -2269,7 +2296,7 @@ gsap.fromTo('.kids-policy .eyebrow, .kids-policy h2, .kids-text',{opacity:0,y:18
 
 // ------ GIFTS ------
 gsap.fromTo('.gifts-head > *',{opacity:0,y:18},{opacity:1,y:0,duration:1,stagger:.1,scrollTrigger:{trigger:'.gifts-head',start:'top 80%'}});
-gsap.fromTo('.giftbox-stage > div',{opacity:0,y:34},{opacity:1,y:0,duration:1,ease:'power3.out',scrollTrigger:{trigger:'.giftbox-stage',start:'top 84%'}});
+gsap.fromTo('.giftbox-stage > div',{opacity:0,y:34},{opacity:1,y:0,duration:1,ease:'power3.out',immediateRender:false,scrollTrigger:{trigger:'.giftbox-stage',start:'top 90%',once:true}});
 
 // ------ QR scan line ------
 const qrWrap = document.getElementById('qr-wrap');
@@ -2480,6 +2507,32 @@ gsap.fromTo('.hair-word',{opacity:0,scaleX:.5},{opacity:1,scaleX:1,duration:1.2,
   /* ---------- Apertura / cierre ---------- */
   var isOpen = false;
 
+  // La seccion contenedora usa `contain:layout paint`, que crea un contenedor para
+  // position:fixed y RECORTA el modal (en iOS lo deja fuera de vista). Lo sacamos al
+  // <body> la primera vez que se abre para que el fixed sea siempre respecto al viewport.
+  if(reveal.parentElement !== document.body) document.body.appendChild(reveal);
+
+  // Bloqueo de scroll compatible con iOS: overflow:hidden en body NO basta en Safari.
+  var savedScrollY = 0;
+  function lockScroll(){
+    savedScrollY = window.pageYOffset || document.documentElement.scrollTop || 0;
+    document.body.style.position = 'fixed';
+    document.body.style.top      = (-savedScrollY) + 'px';
+    document.body.style.left     = '0';
+    document.body.style.right    = '0';
+    document.body.style.width    = '100%';
+    document.body.classList.add('gift-locked');
+  }
+  function unlockScroll(){
+    document.body.classList.remove('gift-locked');
+    document.body.style.position = '';
+    document.body.style.top      = '';
+    document.body.style.left     = '';
+    document.body.style.right    = '';
+    document.body.style.width    = '';
+    window.scrollTo(0, savedScrollY);
+  }
+
   function openGift(){
     if(isOpen) return;
     isOpen = true;
@@ -2489,10 +2542,13 @@ gsap.fromTo('.hair-word',{opacity:0,scaleX:.5},{opacity:1,scaleX:1,duration:1.2,
     burst();
     setTimeout(function(){
       reveal.classList.add('is-open');
-      document.body.classList.add('gift-locked');
-      layoutSlides();
-      goTo(0, 'auto');
-      if(viaTeclado && closeB) closeB.focus();
+      lockScroll();
+      // en iOS el layout del modal recien mostrado tarda un frame en estabilizarse
+      requestAnimationFrame(function(){
+        layoutSlides();
+        goTo(0, 'auto');
+        if(viaTeclado && closeB) closeB.focus();
+      });
     }, 240);
   }
 
@@ -2500,7 +2556,7 @@ gsap.fromTo('.hair-word',{opacity:0,scaleX:.5},{opacity:1,scaleX:1,duration:1.2,
     if(!isOpen) return;
     isOpen = false;
     reveal.classList.remove('is-open');
-    document.body.classList.remove('gift-locked');
+    unlockScroll();
     // La caja vuelve a cerrarse para poder abrirla otra vez
     setTimeout(function(){
       box.classList.remove('is-open');
