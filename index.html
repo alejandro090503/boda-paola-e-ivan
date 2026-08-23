@@ -2404,13 +2404,21 @@ gsap.fromTo('.hair-word',{opacity:0,scaleX:.5},{opacity:1,scaleX:1,duration:1.2,
   nextBtn.addEventListener('click', function(){ goTo(idx+1); });
 
   // El scroll nativo (dedo, trackpad, barra) manda: leemos la posición y sincronizamos
+  function syncFromScroll(){
+    var n = Math.round(viewp.scrollLeft / Math.max(1, viewp.clientWidth));
+    n = Math.max(0, Math.min(total-1, n));
+    if(n !== idx){ idx = n; syncUI(); }
+  }
   var scrollTick = null;
   viewp.addEventListener('scroll', function(){
     if(scrollTick) clearTimeout(scrollTick);
-    scrollTick = setTimeout(function(){
-      var n = Math.round(viewp.scrollLeft / Math.max(1, viewp.clientWidth));
-      if(n !== idx){ idx = Math.max(0, Math.min(total-1, n)); syncUI(); }
-    }, 90);
+    scrollTick = setTimeout(syncFromScroll, 90);
+  }, {passive:true});
+  // Respaldos: Safari no siempre emite 'scroll' al terminar el desplazamiento por inercia
+  viewp.addEventListener('scrollend', syncFromScroll);
+  viewp.addEventListener('touchend', function(){
+    setTimeout(syncFromScroll, 160);
+    setTimeout(syncFromScroll, 520);
   }, {passive:true});
 
   /* Arrastre con el ratón (en escritorio no hay gesto táctil) */
