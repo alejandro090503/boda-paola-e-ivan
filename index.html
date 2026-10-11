@@ -751,6 +751,10 @@ body.gift-locked{overflow:hidden}
   transition:color .4s,border-color .4s;
 }
 .album-link:hover{color:var(--accent-deep);border-bottom-color:var(--accent-deep)}
+.album-qr.bloqueado img{filter:blur(7px);opacity:.75}
+.album-qr.bloqueado ~ .album-link{pointer-events:none;opacity:.45}
+.album-aviso{font-family:var(--serif);font-style:italic;font-weight:400;font-size:clamp(16px,1.8vw,18px);line-height:1.8;color:var(--ink);max-width:380px;margin:30px auto 0}
+.album-qr:not(.bloqueado) ~ .album-aviso{display:none}
 
 /* ============ RSVP ============ */
 .rsvp{text-align:center}
@@ -1789,13 +1793,25 @@ body.gift-locked{overflow:hidden;-webkit-overflow-scrolling:auto;overscroll-beha
   <section class="section-bg album">
     <div class="container album-inner">
       <div class="eyebrow">Álbum compartido</div>
-      <h2>Comparte <em>tus</em> fotos con nosotros</h2>
-      <p class="album-text">Escanea el código QR con tu cámara para subir tus fotos al álbum del evento. Queremos vivir el día desde tus ojos también.</p>
-      <div class="album-qr" id="qr-wrap">
-        <img src="https://api.qrserver.com/v1/create-qr-code/?size=300x300&color=1E2F4E&bgcolor=F5F1E6&margin=4&data=https%3A%2F%2Fdrive.google.com%2Fdrive%2Ffolders%2F1cRDH6JGF9QQUdziDZKGjYgzN0PbbYfXK%3Fusp%3Dsharing" alt="Código QR para álbum compartido" width="300" height="300" loading="lazy">
+      <h2>Álbum de <em>fotos</em></h2>
+      <p class="album-text">Ayúdanos a guardar cada momento: sube aquí las fotos que tomes durante el evento.</p>
+      <!-- Álbum de Elysium: el QR abre /album → panel-invitados.vercel.app/subir/boda-paola-e-ivan -->
+      <div class="album-qr" id="qr-wrap" data-fecha="2026-12-18">
+        <img src="qr-album.png" alt="Código QR del álbum de fotos" width="300" height="300">
       </div>
       <br>
-      <a class="album-link" href="https://drive.google.com/drive/folders/1cRDH6JGF9QQUdziDZKGjYgzN0PbbYfXK?usp=sharing" target="_blank" rel="noopener">Abrir el álbum compartido</a>
+      <a class="album-link" href="/album">Subir mis fotos</a>
+      <p class="album-aviso">El álbum de fotos se habilita el día del evento. Regresa aquí y sube todas tus fotos de la noche ✨</p>
+      <script>
+        /* Se desbloquea solo el día del evento (la base además rechaza fotos antes de tiempo) */
+        (function(){
+          var box = document.querySelector('.album-qr');
+          if(!box) return;
+          var p = box.dataset.fecha.split('-');
+          var abre = new Date(+p[0], +p[1] - 1, +p[2], 0, 0, 0);
+          if(new Date() < abre) box.classList.add('bloqueado');
+        })();
+      </script>
     </div>
   </section>
 
