@@ -1902,7 +1902,7 @@ body.gift-locked{overflow:hidden;-webkit-overflow-scrolling:auto;overscroll-beha
 
           <div class="eyebrow">Confirma tu asistencia</div>
           <h2 class="rsvp-title">Tu presencia <em>lo</em> es todo</h2>
-          <p class="rsvp-text">Agradecemos confirmar tu asistencia antes del <strong>1 de noviembre de 2026</strong>. Después de esta fecha, los lugares no confirmados serán liberados.</p>
+          <p class="rsvp-text">Agradecemos confirmar tu asistencia antes del <strong>1 de diciembre de 2026</strong>. Después de esta fecha, los lugares no confirmados serán liberados.</p>
 
           <p id="rsvp-name-display" style="display:none;font-family:var(--script);font-size:clamp(30px,7vw,44px);color:var(--gold-deep);line-height:1.2;margin:18px auto 4px;"></p>
 
@@ -2771,7 +2771,7 @@ window.addEventListener('resize',()=>ScrollTrigger.refresh());
 (function(){
   var PANEL_API = 'https://panel-invitados.vercel.app/api/confirmar';
   var RSVP_URL  = 'https://boda-paola-e-ivan.vercel.app';
-  var DEADLINE  = new Date(2026, 10, 1, 23, 59, 59, 999); // 1 nov 2026
+  var DEADLINE  = new Date(2026, 11, 1, 23, 59, 59, 999); // 1 dic 2026
   var frozen    = Date.now() > DEADLINE.getTime();
 
   var params  = new URLSearchParams(window.location.search);
